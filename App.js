@@ -7,20 +7,42 @@ class App extends Component {
 		super(props);
 		this.state = {
 			answer:0,
-			corAnswer:-1,
+			corAnswer:0,
 			choices :[90,89,23,43,54,22],
-			
-			iterate:[1,2,3]
+			iterate:[1,2,3],
+			ans : []
 		}
 	this.ans=[];
  this.choices = [];
 	}
 
-generateData = ()=>{
+	computeAns = (input)=>{
+		if(input > this.state.answer){
+			console.log("Wrong Answer")
+		}
+		else{
+			const newAns = this.state.corAnswer + input;
+			console.log("New Answer => "+newAns);
 
+			if(newAns > this.state.answer){
+				console.log(newAns > this.state.answer);
+				console.log(this.state.answer);
+				console.log("Wrong Answer. Please Try again");
+			}
+			else{
+				this.setState({
+					corAnswer : newAns
+				});
+				console.log("ANSWER STATE IS "+this.state.answer)
+			}
+		}
+	
+	}
+
+generateData = ()=>{//////////////////////////////
 	let keys = [];
+	this.ans=[];
 		let res = Math.random(1)*100;
-
 		const flag = 2;//Math.floor(Math.random(2)*7);
 		switch(flag){
 			case 2:
@@ -32,19 +54,20 @@ generateData = ()=>{
 						}
 					}
 			const secondNum = Math.floor(res-firstNum);
-			
 			while(keys.length !== 6){
 				index = Math.floor(Math.random()*7);
 				if(!keys.includes(index))  keys.push(index);
 			}
-		
-
 			for(var x = 0; x<=keys.length; x++){
 				const key = keys.splice(Math.floor(Math.random()*keys.length),1);
-				this.choices.push(Math.floor(Math.random(1)*75));	
+				const num = Math.floor(Math.random(1)*75);
+				this.choices.push(num <= 9 ? "0"+num : num);	
 			}
-this.choices.push(firstNum);	
-this.choices.push(secondNum);	
+this.choices.push(firstNum <= 9 ? "0"+firstNum : firstNum);	
+this.choices.push(secondNum <= 9 ? "0"+secondNum : secondNum);	// 
+
+
+
 			break;
 
 			case 3:
@@ -60,10 +83,6 @@ this.choices.push(secondNum);
 			break;
 		}
 
-		this.setState({
-			answer:Math.floor(res)
-		});
-
 		for(let i = 0; i<this.choices.length; i++){
 			//curIndex = ;
 			//currChoice1 = ;
@@ -77,9 +96,19 @@ for(let i = 0; i<this.choices.length; i++){
 
 		}
 this.ans.push(this.choices.shift());
+
+console.log(this.ans);
+// this.setState({
+// 	//answer:Math.floor(res),
+// 	choices:this.ans
+// });
+this.setState({
+	answer:Math.floor(res),
+	ans:this.ans //[Math.random(),3,]//
+});
 }
 	componentDidMount(){
-this.generateData();
+		this.generateData();
 	}
 reload = ()=>{
 	this.generateData();
@@ -87,28 +116,7 @@ reload = ()=>{
 	 render(){
 		
 		//let choose = [];
-		const items = this.state.iterate.map(item=>{
-		//console.log(this.choices);
-			//const itemss = this.choices[0];
 
-//console.log("CurIndex "+curIndex+" : CurChoice "+currChoice1);
-			
-/*
-			const curIndex2 = Math.floor(Math.random()*this.choices.length);
-			const currChoice2 = this.choices.splice(curIndex2,1);
-*/
-			return (
-				<View key={item.key} style={styles.row}>
-						<TouchableOpacity style={styles.choiceButtons}>
-							<Choice data={23} />
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.choiceButtons}>
-							<Choice data={43} />
-						</TouchableOpacity>		
-					</View>
-				
-			)
-		})
 		return(
 			<View style={{flex:1,borderWidth:1,borderColor:"red"}}>
 				<View  style={styles.layout} >
@@ -116,36 +124,36 @@ reload = ()=>{
 						<Result   r={this.state.answer}/>
 					</View>
 				<View  style={styles.row}>
-						<TouchableOpacity style={styles.choiceButtons}>
-							<Choice data={this.ans[0]} />
+						<TouchableOpacity onPress={()=>{this.computeAns(this.state.ans[0])}} style={styles.choiceButtons}>
+							<Choice data={this.state.ans[0]} />
 						</TouchableOpacity>
-						<TouchableOpacity style={styles.choiceButtons}>
-							<Choice data={this.ans[1]} />
+						<TouchableOpacity onPress={()=>{this.computeAns(this.state.ans[1])}} style={styles.choiceButtons}>
+							<Choice data={this.state.ans[1]} />
 						</TouchableOpacity>		
 					</View>
 
 				<View  style={styles.row}>
-						<TouchableOpacity style={styles.choiceButtons}>
-							<Choice data={this.ans[2]} />
+						<TouchableOpacity onPress={()=>{this.computeAns(this.state.ans[2])}} style={styles.choiceButtons}>
+							<Choice data={this.state.ans[2]} />
 						</TouchableOpacity>
-						<TouchableOpacity style={styles.choiceButtons}>
-							<Choice data={this.ans[3]} />
+						<TouchableOpacity onPress={()=>{this.computeAns(this.state.ans[3])}} style={styles.choiceButtons}>
+							<Choice data={this.state.ans[3]} />
 						</TouchableOpacity>		
 					</View>
 
 				<View  style={styles.row}>
-						<TouchableOpacity style={styles.choiceButtons}>
-							<Choice data={this.ans[4]} />
+						<TouchableOpacity onPress={()=>{this.computeAns(this.state.ans[4])}} style={styles.choiceButtons}>
+							<Choice data={this.state.ans[4]} />
 						</TouchableOpacity>
-						<TouchableOpacity style={styles.choiceButtons}>
-							<Choice data={this.ans[5]} />
+						<TouchableOpacity onPress={()=>{this.computeAns(this.state.ans[5])}} style={styles.choiceButtons}>
+							<Choice data={this.state.ans[5]} />
 						</TouchableOpacity>		
 					</View>
 				</View>	
 
 
 				<View >
-					<TouchableOpacity onPress={this.generateData} style={styles.reload}>
+					<TouchableOpacity onPress={this.reload} style={styles.reload}>
 						<Text style={styles.text}>Reload</Text>
 					</TouchableOpacity>
 
