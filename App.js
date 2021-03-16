@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
 import {View,Text,StyleSheet,TouchableOpacity,Dimensions} from 'react-native';
+import AwesomeAlert from 'react-native-awesome-alerts';
 import Result from './src/Components/Result.js';
 import Choice from './src/Components/Choice.js';
 class App extends Component {
@@ -10,31 +11,62 @@ class App extends Component {
 			corAnswer:0,
 			choices :[90,89,23,43,54,22],
 			iterate:[1,2,3],
+			showAlert: true,
 			ans : []
 		}
 	this.ans=[];
  this.choices = [];
 	}
-
-	computeAns = (input)=>{
+	showAlert = () => {
+		this.setState({
+		  showAlert: true
+		});
+	  };
+	 
+	  hideAlert = () => {
+		this.setState({
+		  showAlert: false
+		});
+	  };
+	computeAns = async(input)=>{
 		if(input > this.state.answer){
 			console.log("Wrong Answer")
+			/// Alert to be implemented later.
+			this.generateData();
 		}
 		else{
-			const newAns = this.state.corAnswer + input;
-			console.log("New Answer => "+newAns);
+			const oldAns = Number(this.state.corAnswer);
+			const curVal = Number(input);
+			const newAns = oldAns+curVal;
+			console.log("============="+newAns)
+			await this.setState({corAnswer:newAns});
+			if(this.state.corAnswer> this.state.answer){
+					/// Alert to be implemented later.
+				console.log("sorry you get it wrong.");
+				await this.setState({corAnswer:0});
+				this.generateData();
+			}
+			else if(this.state.corAnswer== this.state.answer){
+				/// Alert to be implemented later.
+				await this.setState({corAnswer:0}); 
+				console.log(`Correct Answer`);
+				this.generateData();
+			}
 
-			if(newAns > this.state.answer){
-				console.log(newAns > this.state.answer);
-				console.log(this.state.answer);
-				console.log("Wrong Answer. Please Try again");
-			}
-			else{
-				this.setState({
-					corAnswer : newAns
-				});
-				console.log("ANSWER STATE IS "+this.state.answer)
-			}
+			// const newAns = this.state.corAnswer + input;
+			// console.log("New Answer => "+newAns);
+
+			// if(newAns > this.state.answer){
+			// 	console.log(newAns > this.state.answer);
+			// 	console.log(this.state.answer);
+			// 	console.log("Wrong Answer. Please Try again");
+			// }
+			// else{
+			// 	this.setState({
+			// 		corAnswer : newAns
+			// 	});
+			// 	console.log("ANSWER STATE IS "+this.state.answer)
+			// }
 		}
 	
 	}
@@ -97,7 +129,7 @@ for(let i = 0; i<this.choices.length; i++){
 		}
 this.ans.push(this.choices.shift());
 
-console.log(this.ans);
+//console.log(this.ans);
 // this.setState({
 // 	//answer:Math.floor(res),
 // 	choices:this.ans
@@ -159,6 +191,25 @@ reload = ()=>{
 
 				</View>
 
+<AwesomeAlert
+          show={this.state.showAlert}
+          showProgress={false}
+          title="AwesomeAlert"
+          message="I have a message for you!"
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="No, cancel"
+          confirmText="Yes, delete it"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={() => {
+            this.hideAlert();
+          }}
+          onConfirmPressed={() => {
+            this.hideAlert();
+          }}
+        />
 			</View>
 		)
 	}
